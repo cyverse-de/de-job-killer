@@ -8,14 +8,15 @@
 package main
 
 import (
-	"configurate"
 	"flag"
 	"fmt"
 	"log"
-	"logcabin"
-	"messaging"
-	"model"
 	"os"
+
+	"github.com/cyverse-de/configurate"
+	"github.com/cyverse-de/logcabin"
+	"github.com/cyverse-de/messaging"
+	"github.com/cyverse-de/model"
 )
 
 var (
