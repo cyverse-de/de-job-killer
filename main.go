@@ -73,15 +73,12 @@ func main() {
 		log.Fatal("--kill and --send-status conflict.")
 	}
 
-	cfg, err := configurate.Init(*config)
+	cfg, err := configurate.InitDefaults(*config, configurate.JobServicesDefaults)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	uri, err := cfg.String("amqp.uri")
-	if err != nil {
-		log.Fatal(err)
-	}
+	uri := cfg.GetString("amqp.uri")
 
 	client, err := messaging.NewClient(uri, true)
 	if err != nil {

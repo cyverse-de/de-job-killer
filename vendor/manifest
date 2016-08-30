@@ -5,7 +5,7 @@
 			"importpath": "github.com/cyverse-de/configurate",
 			"repository": "https://github.com/cyverse-de/configurate",
 			"vcs": "git",
-			"revision": "556dd65830fe6096b26638302b1f055cdd003221",
+			"revision": "4b85e07b4aea9377eebe7ce7ee9efff574751ab4",
 			"branch": "master",
 			"notests": true
 		},
