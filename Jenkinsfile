@@ -1,3 +1,4 @@
+#!groovy
 def repo = "de-job-killer"
 def dockerUser = "discoenv"
 
