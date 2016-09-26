@@ -79,6 +79,7 @@ func main() {
 	}
 
 	uri := cfg.GetString("amqp.uri")
+	exchangeName := cfg.GetString("amqp.exchange.name")
 
 	client, err := messaging.NewClient(uri, true)
 	if err != nil {
@@ -86,7 +87,7 @@ func main() {
 	}
 	defer client.Close()
 
-	client.SetupPublishing(messaging.JobsExchange)
+	client.SetupPublishing(exchangeName)
 	go client.Listen()
 
 	switch {
