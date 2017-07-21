@@ -14,9 +14,9 @@ import (
 
 	"github.com/cyverse-de/configurate"
 	"github.com/cyverse-de/logcabin"
-	"github.com/cyverse-de/messaging"
-	"github.com/cyverse-de/model"
 	"github.com/cyverse-de/version"
+	"gopkg.in/cyverse-de/messaging.v2"
+	"gopkg.in/cyverse-de/model.v1"
 )
 
 func doKillJob(client *messaging.Client, uuid string) error {

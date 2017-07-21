@@ -11,7 +11,7 @@ import (
 	"time"
 
 	"github.com/cyverse-de/model/submitfile"
-	"github.com/olebedev/config"
+	"github.com/spf13/viper"
 )
 
 var (
@@ -104,28 +104,16 @@ type Job struct {
 //  * condor.log_path
 //  * condor.filter_files
 //  * irods.base
-func New(cfg *config.Config) *Job {
+func New(cfg *viper.Viper) *Job {
 	n := time.Now().Format(nowfmt)
-	rq, err := cfg.String("condor.request_disk")
-	if err != nil {
-		rq = ""
-	}
-	lp, err := cfg.String("condor.log_path")
-	if err != nil {
-		lp = ""
-	}
+	rq := cfg.GetString("condor.request_disk")
+	lp := cfg.GetString("condor.log_path")
 	var paths []string
-	filterFiles, err := cfg.String("condor.filter_files")
-	if err != nil {
-		filterFiles = ""
-	}
+	filterFiles := cfg.GetString("condor.filter_files")
 	for _, filter := range strings.Split(filterFiles, ",") {
 		paths = append(paths, filter)
 	}
-	irodsBase, err := cfg.String("irods.base")
-	if err != nil {
-		irodsBase = "/"
-	}
+	irodsBase := cfg.GetString("irods.base")
 	return &Job{
 		NowDate:        n,
 		SubmissionDate: n,
@@ -139,7 +127,7 @@ func New(cfg *config.Config) *Job {
 
 // NewFromData creates a new submission and populates it by parsing the passed
 // in []byte as JSON.
-func NewFromData(cfg *config.Config, data []byte) (*Job, error) {
+func NewFromData(cfg *viper.Viper, data []byte) (*Job, error) {
 	var err error
 	s := New(cfg)
 	err = json.Unmarshal(data, s)
@@ -164,10 +152,28 @@ func sanitize(s string) string {
 // like file names.
 func (s *Job) Sanitize() {
 	s.Submitter = sanitize(s.Submitter)
+
 	if s.Type == "" {
 		s.Type = "analysis"
 	}
+
 	s.Name = sanitize(s.Name)
+
+	for i, step := range s.Steps {
+		step.Component.Container.Image.Name = strings.TrimSpace(step.Component.Container.Image.Name)
+		step.Component.Container.Image.Tag = strings.TrimSpace(step.Component.Container.Image.Tag)
+		step.Component.Container.Name = strings.TrimSpace(step.Component.Container.Name)
+
+		for j, vf := range step.Component.Container.VolumesFrom {
+			vf.Name = strings.TrimSpace(vf.Name)
+			vf.Tag = strings.TrimSpace(vf.Tag)
+			vf.NamePrefix = strings.TrimSpace(vf.NamePrefix)
+			vf.HostPath = strings.TrimSpace(vf.HostPath)
+			vf.ContainerPath = strings.TrimSpace(vf.ContainerPath)
+			step.Component.Container.VolumesFrom[j] = vf
+		}
+		s.Steps[i] = step
+	}
 }
 
 // DirectoryName creates a directory name for an analysis. Used when the submission
@@ -273,7 +279,7 @@ func (s *Job) Outputs() []StepOutput {
 func (s *Job) ExcludeArguments() []string {
 	var paths []string
 	for _, input := range s.Inputs() {
-		if !input.Retain {
+		if !input.Retain && input.Value != "" {
 			paths = append(paths, input.Source())
 		}
 	}
@@ -340,7 +346,6 @@ func (s *Job) FinalOutputArguments() []string {
 	retval := []string{
 		"put",
 		"--user", s.Submitter,
-		"--config", "irods-config",
 		"--destination", dest,
 	}
 	for _, m := range MetadataArgs(s.FileMetadata).FileMetadataArguments() {
@@ -359,6 +364,16 @@ func (s *Job) FinalOutputArguments() []string {
 // HTCondor job submission file.
 func (s *Job) FormatUserGroups() string {
 	return submitfile.FormatList(s.UserGroups)
+}
+
+// UsesVolumes returns a boolean value which indicates if any step of a job uses host-mounted volumes
+func (s *Job) UsesVolumes() bool {
+	for _, step := range s.Steps {
+		if step.UsesVolumes() {
+			return true
+		}
+	}
+	return false
 }
 
 // FileMetadata describes a unit of metadata that should get associated with
