@@ -1,6 +1,8 @@
-FROM golang:1.7-alpine
+FROM golang:1.16-alpine
 
 COPY . /go/src/github.com/cyverse-de/de-job-killer
+WORKDIR /go/src/github.com/cyverse-de/de-job-killer
+ENV CGO_ENABLED=0
 RUN go install github.com/cyverse-de/de-job-killer
 
 ENTRYPOINT ["de-job-killer"]
