@@ -9,15 +9,16 @@ package main
 
 import (
 	"flag"
-	"log"
 	"os"
 
 	"github.com/cyverse-de/configurate"
-	"github.com/cyverse-de/logcabin"
 	"github.com/cyverse-de/version"
+	"github.com/sirupsen/logrus"
 	"gopkg.in/cyverse-de/messaging.v2"
 	"gopkg.in/cyverse-de/model.v1"
 )
+
+var log = logrus.WithFields(logrus.Fields{"service": "de-job-killer"})
 
 func doKillJob(client *messaging.Client, uuid string) error {
 	var err error
@@ -83,11 +84,14 @@ func main() {
 
 	client, err := messaging.NewClient(uri, true)
 	if err != nil {
-		logcabin.Error.Fatal(err)
+		log.Fatal(err)
 	}
 	defer client.Close()
 
-	client.SetupPublishing(exchangeName)
+	err = client.SetupPublishing(exchangeName)
+	if err != nil {
+		log.Fatal(err)
+	}
 	go client.Listen()
 
 	switch {
