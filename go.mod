@@ -1,11 +1,17 @@
 module github.com/cyverse-de/de-job-killer
 
-go 1.16
+go 1.21
 
 require (
 	github.com/cyverse-de/configurate v0.0.0-20160830203814-4b85e07b4aea
-	github.com/cyverse-de/model v0.0.0-20170711180048-bf8453314372 // indirect
 	github.com/cyverse-de/version v0.0.0-20160721234331-5119d6500655
+	github.com/sirupsen/logrus v1.8.1
+	gopkg.in/cyverse-de/messaging.v2 v2.0.0-20170721171855-79fe2cf2fd16
+	gopkg.in/cyverse-de/model.v1 v1.0.0-20170711180048-bf8453314372
+)
+
+require (
+	github.com/cyverse-de/model v0.0.0-20170711180048-bf8453314372 // indirect
 	github.com/fsnotify/fsnotify v1.3.2-0.20160816051541-f12c6236fe7b // indirect
 	github.com/hashicorp/hcl v0.0.0-20160902165219-99df0eb941dd // indirect
 	github.com/kr/fs v0.0.0-20131111012553-2788f0dbd169 // indirect
@@ -15,7 +21,6 @@ require (
 	github.com/pelletier/go-toml v0.3.6-0.20160906202557-31055c2ff0bb // indirect
 	github.com/pkg/errors v0.7.1 // indirect
 	github.com/pkg/sftp v0.0.0-20160908100035-8197a2e58073 // indirect
-	github.com/sirupsen/logrus v1.8.1
 	github.com/spf13/afero v0.0.0-20160821083612-20500e2abd0d // indirect
 	github.com/spf13/cast v0.0.0-20160730092037-e31f36ffc91a // indirect
 	github.com/spf13/jwalterweatherman v0.0.0-20160311093646-33c24e77fb80 // indirect
@@ -23,9 +28,8 @@ require (
 	github.com/spf13/viper v0.0.0-20160830143246-16990631d4aa // indirect
 	github.com/streadway/amqp v0.0.0-20160311215503-2e25825abdbd // indirect
 	golang.org/x/crypto v0.0.0-20160915071417-81372b2fc2f1 // indirect
+	golang.org/x/sys v0.0.0-20191026070338-33540a1f6037 // indirect
 	golang.org/x/text v0.0.0-20160915075942-04b8648d973c // indirect
 	gopkg.in/check.v1 v1.0.0-20160105164936-4f90aeace3a2 // indirect
-	gopkg.in/cyverse-de/messaging.v2 v2.0.0-20170721171855-79fe2cf2fd16
-	gopkg.in/cyverse-de/model.v1 v1.0.0-20170711180048-bf8453314372
 	gopkg.in/yaml.v2 v2.0.0-20160715033755-e4d366fc3c79 // indirect
 )
